@@ -195,7 +195,7 @@ const DashboardPage: React.FC = () => {
         className="card p-4 sm:p-6 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900"
       >
         <div className="flex flex-col md:flex-row items-center">
-          <div className="md:w-1/2 mb-6 md:mb-0 md:pr-8">
+          <div className="mb-6 md:mb-0 md:pr-8">
             <motion.h1 
               variants={itemVariants}
               className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-text-primary dark:text-white"
@@ -215,16 +215,7 @@ const DashboardPage: React.FC = () => {
               Continue your journey to success with our latest courses and job opportunities.
             </motion.p>
           </div>
-          <motion.div 
-            variants={itemVariants}
-            className="md:w-1/2 mt-6 md:mt-0"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <div className="bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-gray-700 dark:to-gray-800 border-2 border-dashed border-blue-300 dark:border-gray-600 rounded-xl w-full h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-            </div>
-          </motion.div>
+          
         </div>
       </motion.div>
 
@@ -233,7 +224,7 @@ const DashboardPage: React.FC = () => {
         variants={itemVariants}
       >
         <motion.h2 
-          className="text-xl sm:text-2xl font-bold font-heading text-text-primary mb-4 sm:mb-6 dark:text-white"
+          className="text-xl sm:text-2xl font-bold font-heading text-text-primary mb-4 sm:mb-6 dark:text-green"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -250,7 +241,7 @@ const DashboardPage: React.FC = () => {
             variants={itemVariants}
             whileHover={{ y: -10, scale: 1.02 }}
             transition={{ type: "spring", damping: 12, stiffness: 200 }}
-            className="bounce-in"
+            className="bounce-in dark:bg-gray-800 rounded-xl shadow-lg"
           >
             <StatCard 
               icon={<BookIcon className="h-5 w-5 sm:h-6 sm:w-6" />}
@@ -263,7 +254,7 @@ const DashboardPage: React.FC = () => {
             variants={itemVariants}
             whileHover={{ y: -10, scale: 1.02 }}
             transition={{ type: "spring", damping: 12, stiffness: 200 }}
-            className="bounce-in animation-delay-100"
+            className="bounce-in animation-delay-100 dark:bg-gray-800 rounded-xl shadow-full"
           >
             <StatCard 
               icon={<BriefcaseIcon className="h-5 w-5 sm:h-6 sm:w-6" />}
@@ -276,7 +267,7 @@ const DashboardPage: React.FC = () => {
             variants={itemVariants}
             whileHover={{ y: -10, scale: 1.02 }}
             transition={{ type: "spring", damping: 12, stiffness: 200 }}
-            className="bounce-in animation-delay-200"
+            className="bounce-in animation-delay-200 dark:bg-gray-800 rounded-xl shadow-full"
           >
             <StatCard 
               icon={<MessageIcon className="h-5 w-5 sm:h-6 sm:w-6" />}
@@ -294,7 +285,7 @@ const DashboardPage: React.FC = () => {
         className="slide-up"
       >
         <motion.h2 
-          className="text-xl sm:text-2xl font-bold font-heading text-text-primary mb-4 sm:mb-6 dark:text-white"
+          className="text-xl sm:text-2xl font-bold font-heading text-text-primary mb-4 sm:mb-6 dark:text-green"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}

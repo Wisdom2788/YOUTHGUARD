@@ -461,9 +461,30 @@ const LandingPage: React.FC<LandingPageProps> = ({ openAuthModal }) => {
             >
               <h3 className="text-lg font-semibold">Platform</h3>
               <ul className="mt-4 space-y-2">
-                <li><Link to="/courses" className="text-gray-400 hover:text-white transition-colors duration-300 hover:translate-x-1 inline-block">Courses</Link></li>
-                <li><Link to="/jobs" className="text-gray-400 hover:text-white transition-colors duration-300 hover:translate-x-1 inline-block">Jobs</Link></li>
-                <li><Link to="/#" className="text-gray-400 hover:text-white transition-colors duration-300 hover:translate-x-1 inline-block">Mentors</Link></li>
+                <li>
+                  <button 
+                    onClick={() => openAuthModal('register')} 
+                    className="text-gray-400 hover:text-white transition-colors duration-300 hover:translate-x-1 inline-block text-left w-full"
+                  >
+                    Courses
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => openAuthModal('register')} 
+                    className="text-gray-400 hover:text-white transition-colors duration-300 hover:translate-x-1 inline-block text-left w-full"
+                  >
+                    Jobs
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => openAuthModal('register')} 
+                    className="text-gray-400 hover:text-white transition-colors duration-300 hover:translate-x-1 inline-block text-left w-full"
+                  >
+                    Mentors
+                  </button>
+                </li>
               </ul>
             </motion.div>
             <motion.div 

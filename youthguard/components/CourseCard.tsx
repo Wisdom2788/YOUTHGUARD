@@ -39,7 +39,7 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
           onError={handleImageError}
         />
         <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
-          <span className={`px-2 py-1 sm:px-3 sm:py-1 text-xs font-semibold rounded-full ${difficultyColorMap[course.difficulty]}`}>
+          <span className={`px-2 py-1 sm:px-3 sm:py-1 text-xs font-semibold rounded-lg ${difficultyColorMap[course.difficulty]}`}>
             {course.difficulty}
           </span>
         </div>

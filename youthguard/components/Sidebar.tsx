@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
@@ -11,12 +11,13 @@ import {
   UserIcon, 
   LogoutIcon,
   SunIcon,
-  MoonIcon
+  MoonIcon,
+  CloseIcon
 } from './icons';
 
 interface SidebarProps {
   isOpen: boolean;
-  toggleSidebar?: () => void; // Make it optional since it's not used anymore
+  toggleSidebar?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
@@ -40,9 +41,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
 
   return (
     <>
-      {/* Sidebar - always visible */}
+      {/* Sidebar overlay for mobile */}
+      {isOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={toggleSidebar}
+        />
+      )}
+
+      {/* Sidebar */}
       <div 
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out h-screen translate-x-0`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out h-screen ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
       >
         <div className="flex flex-col h-full">
           {/* Sidebar header */}
@@ -53,7 +62,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
               </div>
               <span className="font-heading font-bold text-xl text-text-primary">YouthGuard</span>
             </div>
-            {/* Remove mobile close button since sidebar is always visible */}
+            {/* Mobile close button */}
+            <button 
+              className="md:hidden text-gray-500 hover:text-gray-700"
+              onClick={toggleSidebar}
+            >
+              <CloseIcon className="h-6 w-6" />
+            </button>
           </div>
 
           {/* Navigation items */}
