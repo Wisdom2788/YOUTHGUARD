@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -16,11 +16,15 @@ import {
   CloseIcon
 } from './icons';
 
-const DashboardSidebar: React.FC = () => {
+interface DashboardSidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth();
   const { darkMode, toggleDarkMode } = useTheme();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -49,29 +53,19 @@ const DashboardSidebar: React.FC = () => {
 
   return (
     <>
-      {/* Mobile sidebar toggle button */}
-      <button 
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-md dark:bg-gray-800"
-        onClick={() => setIsOpen(true)}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-
       {/* Sidebar overlay for mobile */}
       {isOpen && (
         <div 
           className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsOpen(false)}
+          onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
       <motion.div 
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg h-screen dark:bg-gray-800 ${isOpen ? 'block' : 'hidden'} md:block`}
-        initial="closed"
-        animate={isOpen || window.innerWidth >= 768 ? "open" : "closed"}
+        className={`sidebar-desktop fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg h-screen dark:bg-gray-800 ${isOpen ? 'block' : 'hidden'} md:block`}
+        initial="open"
+        animate="open"
         variants={sidebarVariants}
         transition={{ type: "spring", damping: 20, stiffness: 300 }}
       >
@@ -95,7 +89,7 @@ const DashboardSidebar: React.FC = () => {
             {/* Mobile close button */}
             <button 
               className="md:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              onClick={() => setIsOpen(false)}
+              onClick={onClose}
             >
               <CloseIcon className="h-6 w-6" />
             </button>
@@ -128,7 +122,7 @@ const DashboardSidebar: React.FC = () => {
                           : 'text-text-secondary hover:bg-gray-100 hover:text-primary dark:text-gray-300 dark:hover:bg-gray-700'
                       }`
                     }
-                    onClick={() => setIsOpen(false)} // Close sidebar on mobile after navigation
+                    onClick={onClose} // Close sidebar on mobile after navigation
                   >
                     <motion.div
                       whileHover={{ scale: 1.2, rotate: 5 }}
