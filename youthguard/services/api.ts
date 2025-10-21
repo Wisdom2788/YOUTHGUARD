@@ -44,11 +44,29 @@ export const registerUser = (userData: any) =>
 export const loginUser = (credentials: { email: string; password: string }) => 
   api.post('/auth/login', credentials);
 
-export const getUserProfile = () => 
-  api.get('/users/profile');
+export const getUserProfile = () => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    throw new Error('User ID not found. Please log in again.');
+  }
+  return api.get('/users/profile', {
+    headers: {
+      'user-id': userId
+    }
+  });
+};
 
-export const updateUserProfile = (userData: any) => 
-  api.put('/users/profile', userData);
+export const updateUserProfile = (userData: any) => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    throw new Error('User ID not found. Please log in again.');
+  }
+  return api.put('/users/profile', userData, {
+    headers: {
+      'user-id': userId
+    }
+  });
+};
 
 // Course API
 export const getCourses = () => 

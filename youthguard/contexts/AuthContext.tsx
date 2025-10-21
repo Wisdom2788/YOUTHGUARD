@@ -34,7 +34,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     
     if (storedToken && storedUser) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
+      
+      // Ensure userId is stored if not already present
+      if (!localStorage.getItem('userId') && userData._id) {
+        localStorage.setItem('userId', userData._id);
+      }
     }
     
     // Mark auth check as complete whether we found tokens or not
@@ -57,6 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Store in localStorage
         localStorage.setItem('token', userToken);
         localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('userId', userData._id); // Store user ID for profile requests
         
         return true;
       } else {
@@ -101,6 +108,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('userId'); // Remove user ID on logout
     setAuthCheckComplete(true); // Ensure we mark as complete on logout
   };
 

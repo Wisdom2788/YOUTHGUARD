@@ -69,7 +69,7 @@ const ProfilePage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
+
     // Handle nested location fields
     if (name.startsWith('location.')) {
       const locationField = name.split('.')[1];
@@ -93,7 +93,7 @@ const ProfilePage: React.FC = () => {
       const updatedUser = response.data.data;
       setUser(updatedUser);
       setEditing(false);
-      
+
       // Update auth context
       localStorage.setItem('user', JSON.stringify(updatedUser));
     } catch (err) {
@@ -161,7 +161,7 @@ const ProfilePage: React.FC = () => {
                   <p className="text-text-secondary text-sm sm:text-base">Member Since</p>
                   <p className="text-lg sm:text-xl font-semibold text-text-primary mt-1">{new Date(user.createdAt || '').toLocaleDateString()}</p>
                 </div>
-                <button 
+                <button
                   onClick={handleEdit}
                   className="btn-primary mt-4"
                 >
