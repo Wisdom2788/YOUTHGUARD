@@ -317,7 +317,7 @@ const DashboardPage: React.FC = () => {
         className="slide-up"
       >
         <motion.h2 
-          className="text-xl sm:text-2xl font-bold font-heading text-text-primary mb-4 sm:mb-6 dark:text-white"
+          className="text-xl sm:text-2xl font-bold font-heading text-text-primary mb-4 sm:mb-6 dark:text-green"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
