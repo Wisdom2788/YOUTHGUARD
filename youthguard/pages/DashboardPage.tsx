@@ -15,100 +15,39 @@ const DashboardPage: React.FC = () => {
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [backendConnected, setBackendConnected] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null);
+        setBackendConnected(true);
+        
+        let hasNetworkError = false;
         
         // Fetch courses
         try {
           const coursesResponse = await getCourses();
           setCourses(coursesResponse.data.data.slice(0, 2));
-        } catch (err) {
+        } catch (err: any) {
           console.error('Failed to fetch courses:', err);
-          // Set mock data if API fails
-          setCourses([
-            {
-              _id: '1',
-              title: 'Web Development Fundamentals',
-              description: 'Learn the basics of HTML, CSS, and JavaScript',
-              category: 'Programming',
-              instructor: 'John Doe',
-              duration: 20,
-              difficulty: 'Beginner',
-              thumbnail: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
-              enrollmentCount: 120,
-              rating: 4.5,
-              isActive: true,
-              createdBy: '1',
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
-            },
-            {
-              _id: '2',
-              title: 'UI/UX Design Principles',
-              description: 'Master the art of user interface and experience design',
-              category: 'Design',
-              instructor: 'Jane Smith',
-              duration: 15,
-              difficulty: 'Intermediate',
-              thumbnail: 'https://images.unsplash.com/photo-1558655146-d09347e92766?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80',
-              enrollmentCount: 85,
-              rating: 4.8,
-              isActive: true,
-              createdBy: '2',
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
-            }
-          ]);
+          if (err.isNetworkError || !err.response) {
+            hasNetworkError = true;
+          }
+          setCourses([]);
         }
         
         // Fetch jobs
         try {
           const jobsResponse = await getJobs();
           setJobs(jobsResponse.data.data.slice(0, 2));
-        } catch (err) {
+        } catch (err: any) {
           console.error('Failed to fetch jobs:', err);
-          // Set mock data if API fails
-          setJobs([
-            {
-              _id: '1',
-              title: 'Frontend Developer',
-              description: 'We are looking for a skilled frontend developer with React experience',
-              company: 'Tech Solutions Inc.',
-              location: 'San Francisco, CA',
-              jobType: 'Full-time',
-              salaryMin: 70000,
-              salaryMax: 90000,
-              requirements: ['React', 'JavaScript', 'CSS'],
-              skills: ['React', 'JavaScript', 'HTML', 'CSS'],
-              applicationDeadline: new Date(Date.now() + 30*24*60*60*1000).toISOString(),
-              isActive: true,
-              postedBy: '1',
-              applicationsCount: 12,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
-            },
-            {
-              _id: '2',
-              title: 'UX Designer',
-              description: 'Join our design team to create beautiful user experiences',
-              company: 'Creative Studios',
-              location: 'New York, NY',
-              jobType: 'Full-time',
-              salaryMin: 65000,
-              salaryMax: 85000,
-              requirements: ['Figma', 'Adobe XD', 'User Research'],
-              skills: ['UI Design', 'UX Research', 'Prototyping'],
-              applicationDeadline: new Date(Date.now() + 45*24*60*60*1000).toISOString(),
-              isActive: true,
-              postedBy: '2',
-              applicationsCount: 8,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
-            }
-          ]);
+          if (err.isNetworkError || !err.response) {
+            hasNetworkError = true;
+          }
+          setJobs([]);
         }
         
         // Fetch unread messages count
@@ -117,15 +56,24 @@ const DashboardPage: React.FC = () => {
             const messagesResponse = await getUnreadMessages(user._id);
             setUnreadMessages(messagesResponse.data.data.length);
           }
-        } catch (err) {
+        } catch (err: any) {
           console.error('Failed to fetch messages:', err);
-          // Set mock data if API fails
-          setUnreadMessages(3);
+          if (err.isNetworkError || !err.response) {
+            hasNetworkError = true;
+          }
+          setUnreadMessages(0);
+        }
+        
+        if (hasNetworkError) {
+          setBackendConnected(false);
+          setError('Unable to connect to server. Please check your internet connection and try again.');
         }
         
         setLoading(false);
-      } catch (err) {
-        setError('Failed to load dashboard data');
+      } catch (err: any) {
+        console.error('Dashboard data fetch error:', err);
+        setError('Failed to load dashboard data. Please try again.');
+        setBackendConnected(false);
         setLoading(false);
       }
     };
@@ -145,15 +93,83 @@ const DashboardPage: React.FC = () => {
     );
   }
 
-  if (error) {
+  const handleRetry = () => {
+    window.location.reload();
+  };
+
+  if (error && !backendConnected) {
     return (
       <motion.div 
-        className="bg-red-50 border border-red-200 rounded-md p-4 slide-in-right"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
+        className="space-y-6 sm:space-y-8 fade-in"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <p className="text-sm text-red-700">{error}</p>
+        {/* Hero Section with Error */}
+        <motion.div 
+          className="card p-4 sm:p-6 rounded-xl bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900 dark:to-red-800 border border-red-200 dark:border-red-700"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="text-center">
+            <div className="mx-auto h-16 w-16 rounded-full bg-red-100 dark:bg-red-800 flex items-center justify-center mb-4">
+              <svg className="h-8 w-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold font-heading text-red-800 dark:text-red-200 mb-2">
+              Connection Error
+            </h1>
+            <p className="text-red-700 dark:text-red-300 text-base sm:text-lg mb-6">
+              {error}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button 
+                onClick={handleRetry}
+                className="px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              >
+                Try Again
+              </button>
+              <button 
+                onClick={() => window.location.href = '/#/'}
+                className="px-6 py-3 bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              >
+                Go to Home
+              </button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Troubleshooting Tips */}
+        <motion.div 
+          className="card p-4 sm:p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <h2 className="text-xl font-bold font-heading text-text-primary dark:text-white mb-4">
+            Troubleshooting Tips
+          </h2>
+          <ul className="space-y-2 text-text-secondary dark:text-gray-300">
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              Check your internet connection
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              Make sure the backend server is running
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              Try refreshing the page
+            </li>
+            <li className="flex items-start">
+              <span className="text-primary mr-2">•</span>
+              Contact support if the problem persists
+            </li>
+          </ul>
+        </motion.div>
       </motion.div>
     );
   }

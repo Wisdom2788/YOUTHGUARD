@@ -15,6 +15,8 @@ import ProgressPage from './pages/ProgressPage';
 import Layout from './components/Layout';
 import DashboardLayout from './components/DashboardLayout';
 import AuthModal from './components/AuthModal';
+import ErrorBoundary from './components/ErrorBoundary';
+import ConnectionStatus from './components/ConnectionStatus';
 
 // Simple layout without sidebar for landing page
 const SimpleLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -56,9 +58,10 @@ function App() {
   };
 
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <HashRouter>
+    <ErrorBoundary>
+      <AuthProvider>
+        <ThemeProvider>
+          <HashRouter>
           <Routes>
             <Route path="/" element={
               <SimpleLayout>
@@ -94,9 +97,11 @@ function App() {
           onClose={closeAuthModal} 
           initialView={authView} 
         />
-      </HashRouter>
-      </ThemeProvider>
-    </AuthProvider>
+        <ConnectionStatus />
+          </HashRouter>
+        </ThemeProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

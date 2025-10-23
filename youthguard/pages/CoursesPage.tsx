@@ -8,6 +8,7 @@ const CoursesPage: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [backendConnected, setBackendConnected] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
 
@@ -15,11 +16,19 @@ const CoursesPage: React.FC = () => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
+        setError(null);
         const response = await getCourses();
         setCourses(response.data.data);
-      } catch (error) {
+        setBackendConnected(true);
+      } catch (error: any) {
         console.error("Failed to fetch courses", error);
-        setError("Failed to load courses. Please try again later.");
+        if (error.isNetworkError || !error.response) {
+          setBackendConnected(false);
+          setError("Unable to connect to server. Please check your internet connection and try again.");
+        } else {
+          setError("Failed to load courses. Please try again later.");
+        }
+        setCourses([]);
       } finally {
         setLoading(false);
       }
@@ -43,9 +52,26 @@ const CoursesPage: React.FC = () => {
       <motion.div 
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="bg-red-50 border border-red-200 rounded-md p-4 slide-in-right dark:bg-red-900 dark:border-red-700"
+        className="space-y-6"
       >
-        <p className="text-sm text-red-700 dark:text-red-200">{error}</p>
+        <div className="bg-red-50 border border-red-200 rounded-md p-4 slide-in-right dark:bg-red-900 dark:border-red-700">
+          <div className="flex items-center">
+            <svg className="h-5 w-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+            <p className="text-sm text-red-700 dark:text-red-200">{error}</p>
+          </div>
+          {!backendConnected && (
+            <div className="mt-4">
+              <button 
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors duration-200"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+        </div>
       </motion.div>
     );
   }

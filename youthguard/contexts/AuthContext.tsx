@@ -27,24 +27,53 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
   const [authCheckComplete, setAuthCheckComplete] = useState<boolean>(false); // New state
 
-  // Check for existing token on app start
+  // Check for existing token on app start and validate with backend
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      const userData = JSON.parse(storedUser);
-      setUser(userData);
+    const validateToken = async () => {
+      const storedToken = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
       
-      // Ensure userId is stored if not already present
-      if (!localStorage.getItem('userId') && userData._id) {
-        localStorage.setItem('userId', userData._id);
+      if (storedToken && storedUser) {
+        try {
+          // Validate token with backend by making a simple API call
+          const response = await fetch('http://localhost:5000/api/auth/validate', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${storedToken}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (response.ok) {
+            // Token is valid, set user data
+            const userData = JSON.parse(storedUser);
+            setToken(storedToken);
+            setUser(userData);
+            
+            // Ensure userId is stored if not already present
+            if (!localStorage.getItem('userId') && userData._id) {
+              localStorage.setItem('userId', userData._id);
+            }
+          } else {
+            // Token is invalid, clear storage
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('userId');
+          }
+        } catch (error) {
+          // Backend is down or token validation failed
+          console.warn('Token validation failed:', error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          localStorage.removeItem('userId');
+        }
       }
-    }
+      
+      // Mark auth check as complete whether we found valid tokens or not
+      setAuthCheckComplete(true);
+    };
     
-    // Mark auth check as complete whether we found tokens or not
-    setAuthCheckComplete(true);
+    validateToken();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
