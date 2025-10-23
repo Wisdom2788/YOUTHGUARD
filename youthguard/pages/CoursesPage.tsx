@@ -137,7 +137,6 @@ const CoursesPage: React.FC = () => {
             >
               <CourseCard 
                 course={course} 
-                onEdit={(id) => window.location.hash = `/courses/${id}/edit`} 
               />
             </motion.div>
           ))}

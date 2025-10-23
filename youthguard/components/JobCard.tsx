@@ -5,7 +5,6 @@ import { BriefcaseIcon } from './icons';
 
 interface JobCardProps {
   job: Job;
-  onEdit?: (id: string) => void;
 }
 
 const jobTypeColorMap = {
@@ -16,7 +15,7 @@ const jobTypeColorMap = {
 }
 
 const JobCard: React.FC<JobCardProps> = (props) => {
-  const { job, onEdit } = props;
+  const { job } = props;
   return (
     <motion.div 
       className="card card-hover p-4 sm:p-6 hover-lift rounded-xl shadow-lg dark:shadow-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
@@ -52,16 +51,6 @@ const JobCard: React.FC<JobCardProps> = (props) => {
                 ))}
             </div>
             <div className="flex space-x-2 mt-2 sm:mt-0">
-              {onEdit && (
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => onEdit(job._id)}
-                  className="text-xs sm:text-sm font-medium text-primary hover:text-primary-dark transition-colors dark:text-blue-400 dark:hover:text-blue-300"
-                >
-                  Edit
-                </motion.button>
-              )}
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

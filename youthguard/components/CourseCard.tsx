@@ -5,7 +5,6 @@ import { ClockIcon, LevelIcon, StarIcon } from './icons';
 
 interface CourseCardProps {
   course: Course;
-  onEdit?: (id: string) => void;
 }
 
 const difficultyColorMap = {
@@ -15,7 +14,7 @@ const difficultyColorMap = {
 };
 
 const CourseCard: React.FC<CourseCardProps> = (props) => {
-  const { course, onEdit } = props;
+  const { course } = props;
   
   // Function to handle image loading errors
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -60,18 +59,7 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
             <span>{course.duration} hrs</span>
           </div>
         </div>
-        {onEdit && (
-          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => props.onEdit && props.onEdit(course._id)}
-              className="text-xs sm:text-sm font-medium text-primary hover:text-primary-dark transition-colors dark:text-blue-400 dark:hover:text-blue-300"
-            >
-              Edit Course
-            </motion.button>
-          </div>
-        )}
+
       </div>
     </motion.div>
   );

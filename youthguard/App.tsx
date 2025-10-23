@@ -11,8 +11,7 @@ import CourseDetailsPage from './pages/CourseDetailsPage';
 import JobDetailsPage from './pages/JobDetailsPage';
 import MessagesPage from './pages/MessagesPage';
 import ProgressPage from './pages/ProgressPage';
-import CourseEditPage from './pages/CourseEditPage';
-import JobEditPage from './pages/JobEditPage';
+
 import Layout from './components/Layout';
 import DashboardLayout from './components/DashboardLayout';
 import AuthModal from './components/AuthModal';
@@ -75,13 +74,9 @@ function App() {
           {/* Dashboard routes with only sidebar */}
           <Route element={<DashboardLayout><ProtectedRoute /></DashboardLayout>}>
             <Route path="/courses" element={<CoursesPage />} />
-            <Route path="/courses/new" element={<CourseEditPage />} />
             <Route path="/courses/:id" element={<CourseDetailsPage />} />
-            <Route path="/courses/:id/edit" element={<CourseEditPage />} />
             <Route path="/jobs" element={<JobsPage />} />
-            <Route path="/jobs/new" element={<JobEditPage />} />
             <Route path="/jobs/:id" element={<JobDetailsPage />} />
-            <Route path="/jobs/:id/edit" element={<JobEditPage />} />
             <Route path="/messages" element={<MessagesPage />} />
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/profile" element={<ProfilePage />} />
