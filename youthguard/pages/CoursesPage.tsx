@@ -62,40 +62,23 @@ const CoursesPage: React.FC = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <motion.h1 
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-text-primary"
-            >
-              Explore Courses
-            </motion.h1>
-            <motion.p 
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="mt-1 sm:mt-2 text-text-secondary text-base sm:text-lg"
-            >
-              Find the right course to boost your skills and career.
-            </motion.p>
-          </div>
-          <motion.div 
-            initial={{ x: 20, opacity: 0 }}
+        <div>
+          <motion.h1 
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-2xl sm:text-3xl md:text-4xl font-bold font-heading text-text-primary"
+          >
+            Explore Courses
+          </motion.h1>
+          <motion.p 
+            initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-4 sm:mt-0"
+            className="mt-1 sm:mt-2 text-text-secondary text-base sm:text-lg"
           >
-            <motion.a 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              href="#/courses/new" 
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300"
-            >
-              Create New Course
-            </motion.a>
-          </motion.div>
+            Find the right course to boost your skills and career.
+          </motion.p>
         </div>
       </motion.div>
 
