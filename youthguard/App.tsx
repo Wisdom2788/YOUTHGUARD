@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage';
 import CoursesPage from './pages/CoursesPage';
 import JobsPage from './pages/JobsPage';
 import ProfilePage from './pages/ProfilePage';
+
 import CourseDetailsPage from './pages/CourseDetailsPage';
 import JobDetailsPage from './pages/JobDetailsPage';
 import MessagesPage from './pages/MessagesPage';
@@ -27,21 +28,26 @@ const SimpleLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   );
 };
 
-const ProtectedRoute: React.FC = () => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const authContext = useContext(AuthContext);
   if (!authContext) {
     return <Navigate to="/" replace />;
   }
   const { isAuthenticated, authCheckComplete } = authContext;
   
-  // If we haven't completed the auth check yet, show a loading state or nothing
+  // If we haven't completed the auth check yet, show a loading state
   if (!authCheckComplete) {
-    return <div className="flex justify-center items-center h-screen">
-      <div className="loading-spinner"></div>
-    </div>;
+    return (
+      <div className="flex justify-center items-center h-screen bg-background">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-text-secondary">Loading...</p>
+        </div>
+      </div>
+    );
   }
   
-  return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
+  return isAuthenticated ? <>{children}</> : <Navigate to="/" replace />;
 };
 
 function App() {
@@ -63,35 +69,83 @@ function App() {
         <ThemeProvider>
           <HashRouter>
           <Routes>
+            {/* Landing page */}
             <Route path="/" element={
               <SimpleLayout>
                 <LandingPage openAuthModal={openAuthModal} />
               </SimpleLayout>
             } />
           
-          {/* Routes with header and footer */}
-          <Route element={<Layout><ProtectedRoute /></Layout>}>
-            {/* Add any routes that should keep header and footer here */}
-          </Route>
+            {/* Protected dashboard routes */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <DashboardPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/courses" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <CoursesPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/courses/:id" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <CourseDetailsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            
+
+            
+            <Route path="/jobs" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <JobsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/jobs/:id" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <JobDetailsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/messages" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <MessagesPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/progress" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <ProgressPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <ProfilePage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
           
-          {/* Dashboard routes with only sidebar */}
-          <Route element={<DashboardLayout><ProtectedRoute /></DashboardLayout>}>
-            <Route path="/courses" element={<CoursesPage />} />
-            <Route path="/courses/:id" element={<CourseDetailsPage />} />
-            <Route path="/jobs" element={<JobsPage />} />
-            <Route path="/jobs/:id" element={<JobDetailsPage />} />
-            <Route path="/messages" element={<MessagesPage />} />
-            <Route path="/progress" element={<ProgressPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-          </Route>
-          
-          {/* Dashboard route with its own layout */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<DashboardLayout><DashboardPage /></DashboardLayout>} />
-          </Route>
-          
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+            {/* Catch all route */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
         <AuthModal 
           isOpen={isAuthModalOpen} 
           onClose={closeAuthModal} 

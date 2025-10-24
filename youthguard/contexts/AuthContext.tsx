@@ -27,53 +27,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
   const [authCheckComplete, setAuthCheckComplete] = useState<boolean>(false); // New state
 
-  // Check for existing token on app start and validate with backend
+  // Check for existing token on app start
   useEffect(() => {
-    const validateToken = async () => {
+    const initializeAuth = async () => {
+      console.log('Initializing auth...');
       const storedToken = localStorage.getItem('token');
       const storedUser = localStorage.getItem('user');
       
+      console.log('Stored token exists:', !!storedToken);
+      console.log('Stored user exists:', !!storedUser);
+      
       if (storedToken && storedUser) {
         try {
-          // Validate token with backend by making a simple API call
-          const response = await fetch('http://localhost:5000/api/auth/validate', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${storedToken}`,
-              'Content-Type': 'application/json'
-            }
-          });
+          // Parse stored user data
+          const userData = JSON.parse(storedUser);
+          console.log('Parsed user data:', userData);
           
-          if (response.ok) {
-            // Token is valid, set user data
-            const userData = JSON.parse(storedUser);
-            setToken(storedToken);
-            setUser(userData);
-            
-            // Ensure userId is stored if not already present
-            if (!localStorage.getItem('userId') && userData._id) {
-              localStorage.setItem('userId', userData._id);
-            }
-          } else {
-            // Token is invalid, clear storage
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            localStorage.removeItem('userId');
+          // Set authentication state
+          setToken(storedToken);
+          setUser(userData);
+          
+          // Ensure userId is stored if not already present
+          if (!localStorage.getItem('userId') && userData._id) {
+            localStorage.setItem('userId', userData._id);
           }
+          
+          console.log('Authentication restored successfully');
         } catch (error) {
-          // Backend is down or token validation failed
-          console.warn('Token validation failed:', error);
+          // Invalid stored data, clear storage
+          console.warn('Invalid stored auth data:', error);
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           localStorage.removeItem('userId');
         }
+      } else {
+        console.log('No stored authentication data found');
       }
       
       // Mark auth check as complete whether we found valid tokens or not
       setAuthCheckComplete(true);
+      console.log('Auth check completed');
     };
     
-    validateToken();
+    initializeAuth();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {

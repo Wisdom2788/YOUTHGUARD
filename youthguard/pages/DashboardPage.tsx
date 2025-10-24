@@ -219,7 +219,7 @@ const DashboardPage: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              Welcome back {user?.firstName}
+              Welcome {user?.firstName}
             </motion.h1>
             <motion.p 
               variants={itemVariants}
@@ -228,7 +228,7 @@ const DashboardPage: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Continue your journey to success with our latest courses and job opportunities.
+              Start your journey to success with our latest courses and job opportunities.
             </motion.p>
           </div>
           

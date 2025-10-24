@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Course } from '../types';
-import { ClockIcon, LevelIcon, StarIcon } from './icons';
+import { ClockIcon, StarIcon } from './icons';
 
 interface CourseCardProps {
   course: Course;
@@ -15,26 +16,32 @@ const difficultyColorMap = {
 
 const CourseCard: React.FC<CourseCardProps> = (props) => {
   const { course } = props;
-  
+  const navigate = useNavigate();
+  const [usingFallbackImage, setUsingFallbackImage] = useState(false);
+
   // Function to handle image loading errors
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.target as HTMLImageElement;
-    target.src = 'https://images.unsplash.com/photo-1560250099-28533a76c0a0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80';
+    if (!usingFallbackImage) {
+      // Cybersecurity-themed fallback image
+      target.src = 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80';
+      setUsingFallbackImage(true);
+    }
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="card card-hover overflow-hidden flex flex-col h-full hover-lift rounded-xl shadow-lg dark:shadow-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
       <div className="relative">
-        <motion.img 
+        <motion.img
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.3 }}
-          className="h-32 sm:h-40 md:h-48 w-full object-cover transition-transform duration-500" 
-          src={course.thumbnail || 'https://images.unsplash.com/photo-1560250099-28533a76c0a0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'} 
-          alt={course.title} 
+          className="h-32 sm:h-40 md:h-48 w-full object-cover transition-transform duration-500"
+          src={course.thumbnail || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'}
+          alt={course.title}
           onError={handleImageError}
         />
         <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
@@ -42,6 +49,20 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
             {course.difficulty}
           </span>
         </div>
+        {usingFallbackImage && (
+          <div className="absolute bottom-2 left-2">
+            <span className="px-2 py-1 bg-black bg-opacity-70 text-white text-xs rounded">
+              Default
+            </span>
+          </div>
+        )}
+        {!course.thumbnail && (
+          <div className="absolute bottom-2 left-2">
+            <span className="px-2 py-1 bg-blue-600 bg-opacity-80 text-white text-xs rounded">
+              Security
+            </span>
+          </div>
+        )}
       </div>
       <div className="p-3 sm:p-4 md:p-6 flex flex-col flex-grow">
         <div className="flex-grow">
@@ -58,6 +79,18 @@ const CourseCard: React.FC<CourseCardProps> = (props) => {
             <ClockIcon className="h-4 w-4 sm:h-5 sm:w-5 dark:text-gray-300" />
             <span>{course.duration} hrs</span>
           </div>
+        </div>
+
+        {/* View Details Button */}
+        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate(`/courses/${course._id}`)}
+            className="text-xs sm:text-sm font-semibold text-primary hover:text-blue-700 transition-colors hover-lift dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            View Details &rarr;
+          </motion.button>
         </div>
 
       </div>

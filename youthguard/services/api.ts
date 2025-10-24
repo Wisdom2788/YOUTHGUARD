@@ -35,11 +35,12 @@ api.interceptors.response.use(
     }
     
     if (error.response?.status === 401) {
-      // Handle unauthorized access
+      // Handle unauthorized access - but don't auto-redirect
+      // Let the component handle the redirect logic
+      error.isAuthError = true;
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('userId');
-      window.location.href = '/#/';
     }
     
     return Promise.reject(error);
@@ -143,3 +144,24 @@ export const getCourseProgress = (userId: string, courseId: string) =>
 
 export const getCourseCompletion = (userId: string, courseId: string) => 
   api.get(`/progress/${userId}/${courseId}/completion`);
+
+// Enrollment API
+export const enrollInCourse = (courseId: string) => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    throw new Error('User ID not found. Please log in again.');
+  }
+  return api.post(`/courses/${courseId}/enroll`, {}, {
+    headers: {
+      'user-id': userId
+    }
+  });
+};
+
+export const checkEnrollmentStatus = (courseId: string) => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    throw new Error('User ID not found. Please log in again.');
+  }
+  return api.get(`/users/${userId}/enrollments/${courseId}`);
+};
